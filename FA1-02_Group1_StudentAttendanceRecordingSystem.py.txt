@@ -1,0 +1,70 @@
+import re
+
+attendance = {}
+total_days = int(input("Enter number of school days this month: "))
+
+while True:
+    print("\n--- Attendance Menu ---")
+    print("1. Mark Attendance")
+    print("2. Show Attendance")
+    print("3. Monthly Report")
+    print("4. Exit")
+
+    choice = input("Enter your choice: ")
+
+    if choice == '1':
+        
+        while True:
+            name = input("Enter student name: ").strip()
+            if not name:
+                print("Invalid! Student name cannot be empty. Please try again.")
+            elif not re.match(r'^[A-Za-z ]+$', name):
+                print("Invalid! Name should only contain letters and spaces (no numbers or symbols).")
+            else:
+                break 
+
+        try:
+            day = int(input(f"Enter day number (1 to {total_days}): "))
+        except ValueError:
+            print("Invalid! Please enter a valid number for the day.")
+            continue
+
+        if day < 1 or day > total_days:
+            print(f"Invalid! Day number must be between 1 and {total_days}.")
+            continue
+
+        status = input("Enter 'P' for Present or 'A' for Absent: ").upper()
+        if status not in ['P', 'A']:
+            print("Invalid! Attendance input must be 'P' or 'A'.")
+            continue
+
+        if name not in attendance:
+            attendance[name] = ['-' for _ in range(total_days)]
+
+        attendance[name][day - 1] = status
+        print(f"Recorded {status} for {name} on day {day}.")
+
+    elif choice == '2':
+        print("\n--- Attendance Record ---")
+        if not attendance:
+            print("No attendance records found.")
+        else:
+            for name, record in attendance.items():
+                print(f"{name}: {' '.join(record)}")
+
+    elif choice == '3':
+        print("\n--- Monthly Report ---")
+        if not attendance:
+            print("No attendance records found.")
+        else:
+            for name, record in attendance.items():
+                present = record.count('P')
+                absent = record.count('A')
+                print(f"{name}: Present = {present}, Absent = {absent}")
+
+    elif choice == '4':
+        print("Thank you!")
+        break
+
+    else:
+        print("Invalid choice. Try again.")
